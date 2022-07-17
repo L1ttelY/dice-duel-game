@@ -1,14 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SelectModeButtonController:MouseOver {
 
+	[SerializeField] GameObject point;
 	[SerializeField] int type;
+
+	const float pointDistance = 0.46666666667f;
+	Image[,] images = new Image[3,3];
 
 	private void Start() {
 		Game.OverrideText+=Game_OverrideText;
 		TileControllerBase.OverrideColor+=TileControllerBase_OverrideColor;
+		for(int x = 0;x<3;x++) {
+			for(int y = 0;y<3;y++) {
+				images[x,y]=Instantiate(point,transform).GetComponent<Image>();
+				images[x,y].transform.localPosition=new Vector3((x-1)*pointDistance,(y-1)*pointDistance);
+			}
+		}
 	}
 
 	private void OnDestroy() {
@@ -42,6 +53,15 @@ public class SelectModeButtonController:MouseOver {
 
 	private void Update() {
 		transform.localScale=Vector3.one*(isMouseOver ? 1.1f : 1f);
+
+		int selectedDice = Game.instance.rollResult;
+		bool[,] pattern = type==0 ? Game.instance.diceDatas[selectedDice].pattern1 : Game.instance.diceDatas[selectedDice].pattern2;
+
+		for(int x = 0;x<3;x++) {
+			for(int y = 0;y<3;y++) {
+				images[x,y].color=pattern[x,y] ? Color.white : Color.clear;
+			}
+		}
 	}
 
 	protected override void OnClick() {

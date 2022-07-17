@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class TileControllerBase:MouseOver {
 
+	protected static bool attackBlocked;
+
 	public int ownerPlayer { get; protected set; }
 	public int x;
 	public int y;
@@ -15,8 +17,26 @@ public class TileControllerBase:MouseOver {
 
 	public static event EventHandler OverrideColor;
 
-	void Start() {
+	protected virtual void Start() {
 		image=GetComponent<Image>();
+		Game.OverrideText+=Game_OverrideText;
+	}
+	protected virtual void OnDestroy() {
+		Game.OverrideText-=Game_OverrideText;
+	}
+
+	private void Game_OverrideText() {
+		if(Game.instance.currentState!=State.Normal) return;
+		if(!isMouseOver) return;
+
+		if(Game.instance.playerInControl==ownerPlayer) {
+			//ÖÎÁÆ
+			Game.instance.text.text="Throw a healing dice here.";
+		} else {
+			//¹¥»÷
+			if(attackBlocked) Game.instance.text.text="Attack blocked.";
+			else Game.instance.text.text="Throw an attacking dice here.";
+		}
 	}
 
 	void Update() {
@@ -50,7 +70,7 @@ public class TileControllerBase:MouseOver {
 	}
 
 	protected override void OnClick() {
-		Game.instance.DiceClick(ownerPlayer,x,y);
+		if(!attackBlocked) Game.instance.DiceClick(ownerPlayer,x,y);
 	}
 
 }

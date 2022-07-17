@@ -21,7 +21,7 @@ public class PlayerController:MonoBehaviour {
 			for(int y = 0;y<3;y++) {
 
 				tiles[x,y]=Instantiate(tilePrefabs[Random.Range(0,tilePrefabs.Length)],transform).GetComponent<TileControllerBase>();
-				tiles[x,y].transform.localPosition=new Vector2((x-1)*1.2f,(y-1)*1.2f);
+				tiles[x,y].transform.localPosition=new Vector2((x-1)*1.6f,(y-1)*1.6f);
 				tiles[x,y].Init(playerIndex,x,y);
 
 			}
