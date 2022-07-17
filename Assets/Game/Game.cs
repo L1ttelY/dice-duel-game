@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 
 public enum State {
+	Rolling,
 	Normal,
 	Thrown,
 	DecideDirection,
@@ -21,21 +22,33 @@ public class Game:MonoBehaviour {
 
 	public DiceData[] diceDatas;
 	[SerializeField] GameObject rollingDice;
+	public GameObject rollingTile;
 
 	public static event Void OverrideText;
 	public static event Void TurnStart;
 	public static event Void RoundStart;
+	public static event Void GameStart;
 
 	void Start() {
 		instance=this;
+		currentState=State.Rolling;
+	}
+
+	void StartGame() {
+		if(currentState!=State.Rolling) return;
+		currentState=State.Normal;
 
 		PlayerController.players[playerInControl].diceCount++;
+		Debug.Log("TURN START");
 		TurnStart?.Invoke();
 		RoundStart?.Invoke();
-
+		GameStart?.Invoke();
 	}
 
 	void Update() {
+
+		if(Input.anyKeyDown||Input.GetMouseButtonDown(0)) StartGame();
+
 		if(currentState==State.DecideDirection) {
 			text.text=$"Choose how your dice is used.";
 		} else if(currentState==State.End) {
@@ -62,12 +75,12 @@ public class Game:MonoBehaviour {
 	public void DiceClick(int player,int x,int y) {
 
 		if(currentState!=State.Normal) return;
-		
+
 		if(PlayerController.players[playerInControl].diceCount<=0) return;
 		PlayerController.players[playerInControl].diceCount--;
 
 		currentState=State.Thrown;
-		RollingDiceController dice = Instantiate(rollingDice,Vector3.zero,Quaternion.identity).GetComponent<RollingDiceController>();
+		RollingDiceController dice = Instantiate(rollingDice,new Vector3(0,2.64f),Quaternion.identity).GetComponent<RollingDiceController>();
 		dice.targetPosition=PlayerController.players[player].tiles[x,y].transform.position;
 
 		selectedPlayer=player;

@@ -14,7 +14,7 @@ public class EndTurnButtonController:MouseOver {
 	private void Game_OverrideText() {
 		if(!isMouseOver) return;
 		if(Game.instance.currentState!=State.Normal) return;
-		Game.instance.text.text="End you turn.";
+		Game.instance.text.text=$"End player {(Game.instance.playerInControl==0?"A":"B")}'s turn.";
 	}
 
 	protected override void OnClick() {

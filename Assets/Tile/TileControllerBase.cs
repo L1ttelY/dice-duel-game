@@ -20,6 +20,7 @@ public class TileControllerBase:MouseOver {
 	protected virtual void Start() {
 		image=GetComponent<Image>();
 		Game.OverrideText+=Game_OverrideText;
+		Instantiate(Game.instance.rollingTile,transform.position,transform.rotation);
 	}
 	protected virtual void OnDestroy() {
 		Game.OverrideText-=Game_OverrideText;
@@ -70,7 +71,8 @@ public class TileControllerBase:MouseOver {
 	}
 
 	protected override void OnClick() {
-		if(!attackBlocked) Game.instance.DiceClick(ownerPlayer,x,y);
+		if(attackBlocked&&ownerPlayer!=Game.instance.playerInControl) return;
+		Game.instance.DiceClick(ownerPlayer,x,y);
 	}
 
 }

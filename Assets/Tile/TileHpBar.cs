@@ -25,7 +25,7 @@ public class TileHpBar:MonoBehaviour {
 
 	private void Update() {
 		for(int i = 0;i<tile.hpMax;i++) {
-			points[i].color=i<tile.hp ? Color.white : Color.gray*0.2f;
+			points[i].color=i<tile.hp ? Color.white : new Color(0.2f,0.2f,0.2f,1);
 		}
 	}
 
